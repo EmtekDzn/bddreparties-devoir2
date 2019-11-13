@@ -1,0 +1,5 @@
+[0m[[0m[0mdebug[0m] [0m[0m[watch] [bddreparties-devoir2 / Compile / run] Found inputs: /home/pierre-alban/Documents/BDD/Devoir 2/bddreparties-devoir2/*.{java,scala},/home/pierre-alban/Documents/BDD/Devoir 2/bddreparties-devoir2/src/main/java/**/*.{java,scala},/home/pierre-alban/Documents/BDD/Devoir 2/bddreparties-devoir2/src/main/resources/**/*,/home/pierre-alban/Documents/BDD/Devoir 2/bddreparties-devoir2/src/main/scala/**/*.{java,scala},/home/pierre-alban/Documents/BDD/Devoir 2/bddreparties-devoir2/src/main/scala-2.11/**/*.{java,scala}[0m
+[0m[[0m[0minfo[0m] [0m[0m1. Monitoring source files for bddreparties-devoir2/run...[0m
+[0m[[0m[0minfo[0m] [0m[0m   Press <enter> to interrupt or '?' for more options.[0m
+[0m[[0m[0mdebug[0m] [0m[0m[watch] [debug] Received input event: Run().[0m
+[0m[[0m[0mdebug[0m] [0m[0m[watch] [debug] Received input event: Run().[0m
