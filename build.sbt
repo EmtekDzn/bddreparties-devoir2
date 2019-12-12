@@ -1,9 +1,8 @@
-import org.apache.logging.log4j.core.config.composite.MergeStrategy
-import sun.security.tools.PathList
+
 
 name := "pml"
 
-version := "0.2"
+version := "0.3"
 
 scalaVersion := "2.11.12"
 

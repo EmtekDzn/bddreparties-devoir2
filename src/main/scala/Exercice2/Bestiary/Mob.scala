@@ -21,5 +21,5 @@ class Mob (
                                     "\nArmor : " + armor +
                                     "\nRanged attack : " + rangedAttack +
                                     "\nMelee attack : " + meleeAttack +
-                                    "\nPosition : x=" + position.x + ", y=" + position.y
+                                    "\nPosition : x=" + position.x + ", y=" + position.y + ", z=" + position.z
 }
