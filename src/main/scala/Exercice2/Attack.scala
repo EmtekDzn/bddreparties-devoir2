@@ -1,18 +1,24 @@
 package Exercice2
 
-class Attack(
-    var name: String,
-    //var minDamages: Int,
-    //var maxDamages: Int,
-    var accuracies: List[Int],
-    var minDistance: Int
-    //var maxDistance: Int
+case class Attack(
+    name: String,
+    minDist: Int,
+    maxDist: Int,
+    minDamages: Int,
+    maxDamages: Int,
+    accuracies: List[Int],
+    isMelee: Boolean
 ) {
-    override def toString: String = "Name : " + name +
-                                    //"\nMin damages : " + minDamages +
-                                    //"\nMax damages : " + maxDamages +
-                                    "\n\tAccuracies : " + accuracies.mkString(", ") +
-                                    "\n\tMin distance : " + minDistance //+
-                                    //"\nMax distance : " + maxDistance
 
+    def printAttackType: String = {
+        if(isMelee) "Melee" else "Ranged"
+    }
+
+    override def toString: String = "Name : " + name +
+                                    "Type : " + printAttackType +
+                                    "\nMin damages : " + minDamages +
+                                    "\nMax damages : " + maxDamages +
+                                    "\n\tAccuracies : " + accuracies.mkString(", ") +
+                                    "\n\tMin distance : " + minDist +
+                                    "\nMax distance : " + maxDist
 }

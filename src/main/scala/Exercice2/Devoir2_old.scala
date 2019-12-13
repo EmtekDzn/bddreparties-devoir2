@@ -1,6 +1,6 @@
 package Exercice2
 
-import Exercice2.Bestiary._
+import Exercice2.Mobs._
 import org.apache.spark.{SparkConf, SparkContext}
 
 import scala.collection.mutable.ListBuffer
