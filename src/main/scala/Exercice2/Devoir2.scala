@@ -1,21 +1,25 @@
 package Exercice2
-
-import Exercice2.Bestiary._
-import breeze.linalg.min
-import breeze.numerics.abs
+import org.apache.spark.sql.SparkSession
 import org.apache.spark.{SparkConf, SparkContext}
 
-import scala.collection.mutable.ListBuffer
+import scala.math._
+
+
 
 object Fightv2 extends App {
-  //  Initialisation
   //  Initialisation
   val conf = new SparkConf()
     .setAppName("Crawler Ex1")
     .setMaster("local[*]")
   val sc = new SparkContext(conf)
   sc.setLogLevel("ERROR")
-  val sqlContext= new org.apache.spark.sql.SQLContext(sc)
+
+  val spark = SparkSession.builder
+    .master("local")
+    .appName("Exercise 2")
+    .getOrCreate()
+  val sqlContext = spark.sqlContext
+  import sqlContext.implicits._
 
   val random = scala.util.Random;
 
@@ -50,6 +54,9 @@ object Fightv2 extends App {
                    meleeAttackMinDamage: Int,
                    meleeAttackMaxDamage: Int,
                    meleeAttackAccuracies: Int
+
+                   //Graph
+
                    ){
     //Methode for entity
     //TODO replace "=> Unit" by return type
@@ -100,23 +107,17 @@ object Fightv2 extends App {
     def move(cible:Entity): Unit ={
       //dist who can be run by entity in one iteration
       val range = if(isFlying){this.flyingRange}else{this.moveRange};
-      var rangeLeft = range;
 
-      var theta = Math.atan2(cible.y-this.y, cible.x-this.x)
+      val theta = Math.atan2(cible.y-this.y, cible.x-this.x)
+      val x = min(abs(cible.x-this.x),range) * Math.cos(theta)
+      val y = min(abs(cible.y-this.y),range) * Math.sin(theta)
       if(this.flyingRange > 0){
-        //calc z
-      }
-      val x = min(abs(cible.x-this.x),rangeLeft) * Math.cos(theta)
-      val y = min(abs(cible.y-this.y),rangeLeft) * Math.sin(theta)
-      if(this.flyingRange > 0){
-        val z = min(abs(cible.z-this.z),rangeLeft) * Math.sin(theta)
+        val thetaZ = Math.atan2(x-y, cible.z-this.z)
+        val z = min(abs(cible.z-this.z),range) * Math.sin(thetaZ)
       }else{
         val z = 0
       }
-
-
-
-      //TODO calc max reachable place between this and target
+      setPosition(x.toInt,y.toInt,z.toInt,if (z>0){true}else{false})
     }
 
     //Must be use just after init of entity to set pos on grid
@@ -129,86 +130,22 @@ object Fightv2 extends App {
 
     def think(): Unit ={
       //TODO strucuture de décision entre marher/attaquer/fuir/heal...
+
     }
   }
 
-  def Solar():Entity = {
-    return new Entity("Solar",
-      363,
-        363,
-        15,
-        44,
-        50,
-        150,
-        0,
-      Map("move" -> "move",
-        "melee" -> "dancing_greatsword",
-        "ranged" -> "composite_longbow")
-    )
-  }
-  def OrcBarbarian():Entity = {
-    return new Entity("Double Axe Fury",
-      Map("hpMax" -> 142,
-        "hp" -> 142,
-        "regen" -> 0,
-        "armor" -> 17,
-        "speed" -> 40,
-        "flying" -> 0),
-      Map("move" -> "move",
-        "melee" -> "orc_double_axe",
-        "ranged" -> "mwk_composite_longbow")
-    )
-  }
-  def WorgRider():Entity = {
-    return new Entity("Orc Worg Rider",
-      Map("hpMax" -> 13,
-        "hp" -> 13,
-        "regen" -> 0,
-        "armor" -> 18,
-        "speed" -> 20,
-        "flying" -> 0),
-      Map("move" -> "move",
-        "melee" -> "mwk_battleaxe",
-        "ranged" -> "shortbow")
-    )
-  }
-  def WarLord():Entity = {
-    return new Entity("War Lord",
-      Map("hpm" -> 141,
-        "hp" -> 144,
-        "regen" -> 0,
-        "armor" -> 27,
-        "speed" -> 30,
-        "flying" -> 0),
-      Map("move" -> "move",
-        "melee" -> "vicious_flail",
-        "ranged" -> "mwk_throwing_axe")
-    )
-  }
 
-
-  var entityList = ListBuffer[Entity]()
-
-  entityList += new Entity(new Solar(1, new Position(0,10,0)), ListBuffer[Int](2,3,4,5,6,7,8,9,10,11,12,13,14,15));
-  for (i <- 1 to 9){
-    entityList += new Entity(new OrcWorgRider(i+1, new Position(100+random.nextInt(20), random.nextInt(20), 0)), ListBuffer[Int](1));
-//    entityList += new OrcWorgRider(i+1, new Position(100+random.nextInt(20), random.nextInt(20), 0));
+  //Graph
+  def addEntityToGraph(monster: Entity): Unit ={
+    sommet = sommet union Seq[(Int, Entity)]((entityId, monster)).toDS()
+    entityId+=1
   }
+  var iterationCount:Int = 0
+  var entityId:Int = 0
+  var gameIsWon:Boolean = false
 
-  for (i <- 1 to 4){
-    entityList += new Entity(new DoubleAxeFury(i+1, new Position(115, 8+i, 0)), ListBuffer[Int](1));
-//    entityList += new DoubleAxeFury(i+10, new Position(115, 8+i, 0));
-  }
-  entityList += new Entity(new BrutalWarlord(15, new Position(120, 10, 0)), ListBuffer[Int](1));
-//  entityList += new BrutalWarlord(15, new Position(120, 10, 0));
-
-//  entityDF = entityList.toDF();
-  for (i <- 0 to entityList.size-1){
-    println("\n#############################################\n")
-    print(entityList(i))
-  }
-
-
+  var sommet = Seq[(Int, Entity)]().toDS()
+  var arrete = Seq[(Int, Seq[(Int, Int, Int, Int, Int)])]().toDS()
 
   sc.stop()
 }
