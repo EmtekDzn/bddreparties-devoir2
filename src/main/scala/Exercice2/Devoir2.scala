@@ -1,7 +1,7 @@
 package Exercice2
 
 import Exercice2.Mobs._
-import org.apache.spark.sql.{Encoder, SparkSession}
+import org.apache.spark.sql.SparkSession
 import org.apache.spark.{SparkConf, SparkContext}
 
 
@@ -21,10 +21,7 @@ object Fightv2 extends App {
   val sqlContext = spark.sqlContext
   import sqlContext.implicits._
 
-  implicit val PositionjEncoder: Encoder[Position] = org.apache.spark.sql.Encoders.kryo[Position]
 
-
-  println("Cucou")
   //Graph
   def addEntityToGraph(monster: Entity): Unit ={
     println("")
@@ -38,9 +35,19 @@ object Fightv2 extends App {
   var sommet = Seq[(Int, Entity)]().toDS()
   var arrete = Seq[(Int, Seq[(Int, Int, Int, Int, Int)])]().toDS()
 
+  println("Init mob in graph...")
   addEntityToGraph(new Solar(entityId, new Position(15,15,0,true),"Gentil"))
+  addEntityToGraph(new OrcWorgRider(entityId, new Position(15,45,0,true),"Mechant"))
+  println("Init mob in graph finish")
 
   sommet.show()
+  while (!gameIsWon){
+    iterationCount += 1;
+    println("Tour n°"+iterationCount+"==================================")
 
+    if (iterationCount>10){
+      gameIsWon = true
+    }
+  }
   sc.stop()
 }
